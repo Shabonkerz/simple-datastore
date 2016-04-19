@@ -8,37 +8,45 @@ class Transaction {
 	}
 }
 
-class SimpleDatastore {
-	constructor () {
-		this.store = {};
-		this.count = {};
-		this.transactions = [];
-		this.instream = null;
-		this.outstream = null;
+class Cli {
+	constructor (datastore) {
+		this.datastore = datastore || new Datastore();
+
+		// Streams.
+		this.src = null;
+		this.dest = null;
 
 		// We *could* just reuse SimpleDatastore's object for O(1) command
 		// lookup, however, we might expose current/future private methods
 		// to the REPL. So, here's essentially what amounts to a whitelist.
 		this.commands = {
-			'set': this.set.bind(this),
-			'get': this.get.bind(this),
-			'unset': this.unset.bind(this),
-			'numequalto': this.numEqualTo.bind(this),
-			'end': this.end.bind(this),
-			'begin': this.begin.bind(this),
-			'rollback': this.rollback.bind(this),
-			'commit': this.commit.bind(this)
+			'SET': this.datastore.set.bind(this.datastore),
+			'GET': this.datastore.get.bind(this.datastore),
+			'UNSET': this.datastore.unset.bind(this.datastore),
+			'NUMEQUALTO': this.datastore.numEqualTo.bind(this.datastore),
+			'END': this.datastore.end.bind(this.datastore),
+			'BEGIN': this.datastore.begin.bind(this.datastore),
+			'ROLLBACK': this.datastore.rollback.bind(this.datastore),
+			'COMMIT': this.datastore.commit.bind(this.datastore)
 		};
+
 		this.rl = null;
 	}
 
-	connect (instream, outstream) {
-		this.instream = instream;
-		this.outstream = outstream;
-		this.rl = readline.createInterface(instream, outstream);
-		this.init();
+	/**
+	 * Sets the src/dest streams to read and write from.
+	 * @param  {Stream} src  The stream to read from. e.g. process.stdin
+	 * @param  {Stream} dest The stream to write to. e.g. process.stdout
+	 */
+	connect (src, dest) {
+		this.src = src;
+		this.dest = dest;
+		this.rl = readline.createInterface(src, dest);
 	}
 
+	/**
+	 * Starts the CLI for the datastore.
+	 */
 	init () {
 		this.rl.setPrompt('> ');
 		this.rl.prompt();
@@ -47,7 +55,7 @@ class SimpleDatastore {
 			if (line === '') {
 				return;
 			}
-			const args = line.split(' ').map((a) => a.toLowerCase());
+			const args = line.split(' ');
 			const command = this.commands[args[0]];
 
 			if (command) {
@@ -55,18 +63,28 @@ class SimpleDatastore {
 
 				if (result !== undefined && result !== null)
 				{
-					this.outstream.write(`${result}\n`);
+					this.dest.write(`${result}\n`);
 				}
 			}
 			else
 			{
-				this.outstream.write(`Unable to find ${args[0]} command.\n`);
+				this.dest.write(`Unable to find ${args[0]} command.\n`);
 			}
 
 			this.rl.prompt();
 		}).on('close', () => {
 			process.exit(0);
 		});
+	}
+}
+
+class Datastore {
+	constructor () {
+
+		this.store = {};
+		this.count = {};
+
+		this.transactions = [];
 	}
 
 	get (key) {
@@ -174,6 +192,7 @@ class SimpleDatastore {
 
 }
 
-const sds = new SimpleDatastore();
+const cli = new Cli();
 
-sds.connect(process.stdin, process.stdout);
+cli.connect(process.stdin, process.stdout);
+cli.init();
