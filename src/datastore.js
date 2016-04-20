@@ -61,19 +61,19 @@ export default class Datastore {
 
 	unset (key) {
 
+		if (!key) {
+			return;
+		}
+
 		// Find current value in store.
 		const value = this.store[key];
-
-		// If we found an entry, decrement it in count hash, since we're
-		// removing it.
-		if (value) {
-			this.count[value]--;
-		}
 
 		// Update store with new value.
 		delete this.store[key];
 
 		if (value) {
+			this.count[value]--;
+
 			const transaction = this.transactions[this.transactions.length - 1];
 
 			if (!transaction) {
