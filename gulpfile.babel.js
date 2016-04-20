@@ -4,9 +4,11 @@ import eslint from 'gulp-eslint';
 // import sourcemaps from 'gulp-sourcemaps';
 import notify from 'gulp-notify';
 // import plumber from 'gulp-plumber';
+import mocha from 'gulp-mocha';
 
 var filePath = {
-	js: 'src/**/*.js'
+	src: 'src/**/*.js',
+	tests: 'tests/**/*.js'
 };
 
 gulp.task('lint', () => {
@@ -14,7 +16,7 @@ gulp.task('lint', () => {
 	// So, it's best to have gulp ignore the directory as well.
 	// Also, Be sure to return the stream from the task;
 	// Otherwise, the task may end before the stream has finished.
-	return gulp.src( filePath.js )
+	return gulp.src( filePath.src )
 		// eslint() attaches the lint output to the "eslint" property
 		// of the file object so it can be used by other modules.
 		.pipe(eslint())
@@ -26,8 +28,8 @@ gulp.task('lint', () => {
 		.pipe(eslint.failAfterError());
 });
 
-gulp.task('js', () => {
-	return gulp.src( filePath.js )
+gulp.task('build', () => {
+	return gulp.src( filePath.src )
 		.pipe(babel({
 			presets: [ 'es2015', 'stage-0' ]
 		}))
@@ -35,8 +37,19 @@ gulp.task('js', () => {
 		.pipe(notify({ message: 'Project successfully built!', onLast: true } ));
 });
 
-gulp.task('watch-js', () => {
-	gulp.watch(filePath.js, [ 'js' ]);
+gulp.task('test', () => {
+	return gulp.src( filePath.tests )
+		.pipe(mocha())
+        .once('error', () => {
+            process.exit(1);
+        })
+        .once('end', () => {
+            process.exit();
+        });
 });
 
-gulp.task('default', [ 'js', 'watch-js' ]);
+gulp.task('watch', () => {
+	gulp.watch(filePath.src, [ 'lint', 'build', 'test' ]);
+});
+
+gulp.task('default', [ 'build', 'watch' ]);
