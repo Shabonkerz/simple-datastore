@@ -19,20 +19,24 @@ export default class Datastore {
 
 	set (key, value) {
 
+		if (!key) {
+			return;
+		}
+
 		// Find current value in store.
-		const current = this.store[key];
+		const previousValue = this.store[key];
 
 		// If we found an entry, decrement it in count hash, since we're
 		// removing it.
-		if (current) {
-			this.count[current]--;
+		if (previousValue) {
+			this.count[previousValue]--;
 		}
 
 		// Update store with new value.
 		this.store[key] = value;
 
 		// Initialize if not there, increment if there.
-		if (!current) {
+		if (!(value in this.count)) {
 			this.count[value] = 1;
 		}
 		else {
@@ -46,8 +50,8 @@ export default class Datastore {
 		}
 
 		transaction.undoCommands.push( () => {
-			if (current) {
-				this.set(key, current);
+			if (previousValue) {
+				this.set(key, previousValue);
 			}
 			else {
 				this.unset(key);
