@@ -86,10 +86,6 @@ export default class Datastore {
 		return this.count[value] || 0;
 	}
 
-	end () {
-		process.exit(0);
-	}
-
 	begin () {
 		this.transactions.push(new Transaction());
 	}

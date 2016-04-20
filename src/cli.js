@@ -17,13 +17,20 @@ export default class Cli {
 			'GET': this.datastore.get.bind(this.datastore),
 			'UNSET': this.datastore.unset.bind(this.datastore),
 			'NUMEQUALTO': this.datastore.numEqualTo.bind(this.datastore),
-			'END': this.datastore.end.bind(this.datastore),
+			'END': this.end,
 			'BEGIN': this.datastore.begin.bind(this.datastore),
 			'ROLLBACK': this.datastore.rollback.bind(this.datastore),
 			'COMMIT': this.datastore.commit.bind(this.datastore)
 		};
 
 		this.rl = null;
+	}
+
+	/**
+	 * Terminates the CLI's process.
+	 */
+	end () {
+		process.exit(0);
 	}
 
 	/**
