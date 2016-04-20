@@ -1,16 +1,16 @@
+import EventEmitter from 'events';
+
 class Transaction {
 	constructor () {
 		this.undoCommands = [];
 	}
 }
 
-export default class Datastore {
+export default class Datastore extends EventEmitter {
 	constructor () {
-
+		super();
 		this.store = {};
 		this.count = {};
-
-		this.transactions = [];
 	}
 
 	get (key) {
@@ -43,20 +43,7 @@ export default class Datastore {
 			this.count[value]++;
 		}
 
-		const transaction = this.transactions[this.transactions.length - 1];
-
-		if (!transaction) {
-			return;
-		}
-
-		transaction.undoCommands.push( () => {
-			if (previousValue) {
-				this.set(key, previousValue);
-			}
-			else {
-				this.unset(key);
-			}
-		});
+		this.emit('set', key, previousValue, value);
 	}
 
 	unset (key) {
@@ -68,50 +55,20 @@ export default class Datastore {
 		// Find current value in store.
 		const value = this.store[key];
 
+
+		if (!value) {
+			return;
+		}
+
+		this.count[value]--;
+
 		// Update store with new value.
 		delete this.store[key];
 
-		if (value) {
-			this.count[value]--;
-
-			const transaction = this.transactions[this.transactions.length - 1];
-
-			if (!transaction) {
-				return;
-			}
-
-			transaction.undoCommands.push( () => {
-				this.set(key, value);
-			});
-		}
+		this.emit('unset', key, value);
 	}
 
 	numEqualTo (value) {
 		return this.count[value] || 0;
-	}
-
-	begin () {
-		this.transactions.push(new Transaction());
-	}
-
-	rollback () {
-		if (!this.transactions.length) {
-			return;
-		}
-
-		const currentTransaction = this.transactions[this.transactions.length - 1];
-
-		for (let i = 0, commands = currentTransaction.undoCommands, length = commands.length; i < length; i++) {
-			commands[i]();
-		}
-
-		this.transactions.pop();
-	}
-
-	commit () {
-		if (!this.transactions.length) {
-			return;
-		}
-		this.transactions.pop();
 	}
 }

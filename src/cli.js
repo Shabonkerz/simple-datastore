@@ -1,9 +1,12 @@
 import Datastore from './datastore';
+import TransactionManager from './transactionManager';
 import readline from 'readline';
 
 export default class Cli {
 	constructor (datastore) {
 		this.datastore = datastore || new Datastore();
+
+		this.transactionManager = new TransactionManager(this.datastore);
 
 		// Streams.
 		this.src = null;
@@ -18,9 +21,9 @@ export default class Cli {
 			'UNSET': this.datastore.unset.bind(this.datastore),
 			'NUMEQUALTO': this.datastore.numEqualTo.bind(this.datastore),
 			'END': this.end,
-			'BEGIN': this.datastore.begin.bind(this.datastore),
-			'ROLLBACK': this.datastore.rollback.bind(this.datastore),
-			'COMMIT': this.datastore.commit.bind(this.datastore)
+			'BEGIN': this.transactionManager.begin.bind(this.transactionManager),
+			'ROLLBACK': this.transactionManager.rollback.bind(this.transactionManager),
+			'COMMIT': this.transactionManager.commit.bind(this.transactionManager)
 		};
 
 		this.rl = null;
