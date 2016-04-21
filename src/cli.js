@@ -3,6 +3,15 @@ import TransactionManager from './transactionManager';
 import readline from 'readline';
 import EventEmitter from 'events';
 
+
+export class CliError {
+    constructor (message) {
+        this.name = 'CliError';
+        this.message = message;
+        this.stack = (new Error()).stack;
+    }
+}
+
 export default class Cli extends EventEmitter {
 	constructor (datastore) {
 		super();
@@ -63,8 +72,16 @@ export default class Cli extends EventEmitter {
 			}
 			const args = line.split(' ');
 
-			const result = this._dispatchCommand(...args);
 
+			try {
+				result = this._dispatchCommand(...args);
+			}
+			catch (e) {
+				if (e.message === 'Command not found.') {
+					this.dest.write(`Unable to find ${args[0]} command.`);
+				}
+			}
+			
 			if (result) {
 				this.dest.write(result);
 			}
@@ -85,7 +102,7 @@ export default class Cli extends EventEmitter {
 		const command = this.commands[args[0]];
 
 		if (!command) {
-			return `Unable to find ${args[0]} command.\n`;
+			throw new CliError('Command not found.');
 		}
 
 		const result = command(...args);
