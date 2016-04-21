@@ -75,15 +75,15 @@ export default class Cli extends EventEmitter {
 
 			try {
 				result = this._dispatchCommand(...args);
+
+				if (result) {
+					this.dest.write(result);
+				}
 			}
 			catch (e) {
 				if (e.message === 'Command not found.') {
 					this.dest.write(`Unable to find ${args[0]} command.`);
 				}
-			}
-			
-			if (result) {
-				this.dest.write(result);
 			}
 
 			this.rl.prompt();
