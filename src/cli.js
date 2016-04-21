@@ -4,8 +4,8 @@ import readline from 'readline';
 
 export default class Cli {
 	constructor (datastore) {
+		// By default uses a new data store, unless one is provided.
 		this.datastore = datastore || new Datastore();
-
 		this.transactionManager = new TransactionManager(this.datastore);
 
 		// Streams.
@@ -26,6 +26,7 @@ export default class Cli {
 			'COMMIT': this.transactionManager.commit.bind(this.transactionManager)
 		};
 
+		// To be our readline instance.
 		this.rl = null;
 	}
 

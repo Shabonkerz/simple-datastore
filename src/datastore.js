@@ -1,22 +1,39 @@
 import EventEmitter from 'events';
 
+/**
+ * 	Represents a single transaction.
+ */
 class Transaction {
 	constructor () {
 		this.undoCommands = [];
 	}
 }
 
+/**
+ * 	In-memory data store.
+ */
 export default class Datastore extends EventEmitter {
+	
 	constructor () {
 		super();
 		this.store = {};
 		this.count = {};
 	}
 
+	/**
+	 * Retrieves a single value using the provided key.
+	 * @param  {string} key
+	 * @return {string} The value associated with `key`.
+	 */
 	get (key) {
 		return this.store[key] || 'NULL';
 	}
 
+	/**
+	 * Associates `value` with the key given.
+	 * @param  {string} key
+	 * @param  {string} value The value to associate with `key`.
+	 */
 	set (key, value) {
 
 		if (!key || !value) {
@@ -46,6 +63,10 @@ export default class Datastore extends EventEmitter {
 		this.emit('set', key, previousValue, value);
 	}
 
+	/**
+	 * Sets the value associated with key to NULL.
+	 * @param {string} key The key in the store to unset.
+	 */
 	unset (key) {
 
 		if (!key) {
@@ -67,6 +88,11 @@ export default class Datastore extends EventEmitter {
 		this.emit('unset', key, value);
 	}
 
+	/**
+	 * Retrieves the number of keys that match the given value.
+	 * @param  {string} value 	The value to test against.
+	 * @return {int}       		The number of keys that match given value.
+	 */
 	numEqualTo (value) {
 		return this.count[value] || 0;
 	}
