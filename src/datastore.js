@@ -19,7 +19,7 @@ export default class Datastore extends EventEmitter {
 
 	set (key, value) {
 
-		if (!key) {
+		if (!key || !value) {
 			return;
 		}
 
