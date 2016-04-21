@@ -55,7 +55,6 @@ export default class Datastore extends EventEmitter {
 		// Find current value in store.
 		const value = this.store[key];
 
-
 		if (!value) {
 			return;
 		}

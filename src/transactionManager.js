@@ -46,8 +46,9 @@ export default class TransactionManager {
 				}
 
 				transaction.undoCommands.push( () => {
-					this.set(key, value);
+					this.store.set(key, value);
 				});
+
 			});
 	}
 
