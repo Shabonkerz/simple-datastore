@@ -2,6 +2,7 @@ import Datastore from './datastore';
 import TransactionManager from './transactionManager';
 import readline from 'readline';
 import EventEmitter from 'events';
+import { Readable, Writable, Duplex, Transform } from 'stream';
 
 
 export class CliError {
@@ -54,6 +55,15 @@ export default class Cli extends EventEmitter {
 	 * @param  {Stream} dest The stream to write to. e.g. process.stdout
 	 */
 	connect (src, dest) {
+
+		if (!(src instanceof Readable || src instanceof Duplex || src instanceof Transform)) {
+			throw new CliError('Source stream is not a readable stream.');
+		}
+
+		if (!(dest instanceof Writable || dest instanceof Duplex || dest instanceof Transform)) {
+			throw new CliError('Destination stream is not a writable stream.');
+		}
+
 		this.src = src;
 		this.dest = dest;
 		this.rl = readline.createInterface(src, dest);

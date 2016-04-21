@@ -45,4 +45,33 @@ describe('Cli', () => {
             }).to.throw(CliError);
 		});
 	});
+
+	describe('connect', () => {
+		it('should throw error if src is not readable.', () => {
+            expect(() => {
+				cli.connect(null, process.stdout);
+            }).to.throw(CliError);
+		});
+		it('should throw error if dest is not writable.', () => {
+            expect(() => {
+				cli.connect(process.stdin, null);
+            }).to.throw(CliError);
+		});
+		it('should not throw error if src is readable.', () => {
+            expect(() => {
+				cli.connect(process.stdin, process.stdout);
+            }).to.not.throw(CliError);
+		});
+		it('should not throw error if dest is writable.', () => {
+            expect(() => {
+				cli.connect(process.stdin, process.stdout);
+            }).to.not.throw(CliError);
+		});
+		it('should set src, dest, and rl properties', () => {
+			cli.connect(process.stdin, process.stdout);
+			assert.isNotNull(cli.src);
+			assert.isNotNull(cli.dest);
+			assert.isNotNull(cli.rl);
+		});
+	});
 });
