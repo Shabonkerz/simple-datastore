@@ -64,22 +64,27 @@ export default class Cli extends EventEmitter {
 			const args = line.split(' ');
 			const command = this.commands[args[0]];
 
-			if (command) {
-				const result = command(...args.slice(1));
-
-				if (result !== undefined && result !== null)
-				{
-					this.dest.write(`${result}\n`);
-				}
-			}
-			else
-			{
-				this.dest.write(`Unable to find ${args[0]} command.\n`);
-			}
+			this._dispatchCommand(command, ...args.slice(1));
 
 			this.rl.prompt();
 		}).on('close', () => {
 			this.emit('end');
 		});
+	}
+
+	_dispatchCommand (command, ...args) {
+
+		if (!command) {
+			this.dest.write(`Unable to find ${args[0]} command.\n`);
+			return;
+		}
+
+		const result = command(...args);
+
+		if (result === undefined || result === null) {
+			return;
+		}
+
+		this.dest.write(`${result}\n`);
 	}
 }
