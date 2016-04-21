@@ -63,7 +63,11 @@ export default class Cli extends EventEmitter {
 			}
 			const args = line.split(' ');
 
-			this._dispatchCommand(...args);
+			const result = this._dispatchCommand(...args);
+
+			if (result) {
+				this.dest.write(result);
+			}
 
 			this.rl.prompt();
 		}).on('close', () => {
@@ -75,21 +79,17 @@ export default class Cli extends EventEmitter {
 	 * Handles lookup and execution of commands.
 	 * @param  {string} 		command The command to execute.
 	 * @param  {Array[string]} 	...args Arguments to pass to command.
+	 * @return {string}					The result from execution of provided command.
 	 */
 	_dispatchCommand (...args) {
 		const command = this.commands[args[0]];
 
 		if (!command) {
-			this.dest.write(`Unable to find ${args[0]} command.\n`);
-			return;
+			return `Unable to find ${args[0]} command.\n`;
 		}
 
 		const result = command(...args);
 
-		if (result === undefined || result === null) {
-			return;
-		}
-
-		this.dest.write(`${result}\n`);
+		return result !== undefined && result !== null ? `${result}\n` : '';
 	}
 }
