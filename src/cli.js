@@ -22,7 +22,7 @@ export default class Cli extends EventEmitter {
 			'GET': this.datastore.get.bind(this.datastore),
 			'UNSET': this.datastore.unset.bind(this.datastore),
 			'NUMEQUALTO': this.datastore.numEqualTo.bind(this.datastore),
-			'END': this.end,
+			'END': this.end.bind(this),
 			'BEGIN': this.transactionManager.begin.bind(this.transactionManager),
 			'ROLLBACK': this.transactionManager.rollback.bind(this.transactionManager),
 			'COMMIT': this.transactionManager.commit.bind(this.transactionManager)
