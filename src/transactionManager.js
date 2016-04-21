@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-class Transaction {
+export class Transaction {
 	constructor () {
 		this.undoCommands = [];
 	}
