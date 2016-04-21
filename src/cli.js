@@ -1,9 +1,11 @@
 import Datastore from './datastore';
 import TransactionManager from './transactionManager';
 import readline from 'readline';
+import EventEmitter from 'events';
 
-export default class Cli {
+export default class Cli extends EventEmitter {
 	constructor (datastore) {
+		super();
 		// By default uses a new data store, unless one is provided.
 		this.datastore = datastore || new Datastore();
 		this.transactionManager = new TransactionManager(this.datastore);
@@ -31,10 +33,10 @@ export default class Cli {
 	}
 
 	/**
-	 * Terminates the CLI's process.
+	 * Terminates the CLI.
 	 */
 	end () {
-		process.exit(0);
+		this.emit('end');
 	}
 
 	/**
@@ -77,7 +79,7 @@ export default class Cli {
 
 			this.rl.prompt();
 		}).on('close', () => {
-			process.exit(0);
+			this.emit('end');
 		});
 	}
 }
