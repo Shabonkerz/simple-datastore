@@ -76,12 +76,23 @@ export default class Cli extends EventEmitter {
 		this.rl.setPrompt('> ');
 		this.rl.prompt();
 
-		this.rl.on('line', (line) => {
-			if (line === '') {
-				return;
-			}
-			const args = line.split(' ');
+		this.rl
+			.on('line', (line) => {
+				this._onLine(line);
+			})
+			.on('close', () => {
+				this.emit('end');
+			});
+	}
 
+	/**
+	 * Handles one line of input.
+	 * @param  {string} line The line to process.
+	 */
+	_onLine (line) {
+
+			const args = line.split(' ');
+			let result;
 
 			try {
 				result = this._dispatchCommand(...args);
@@ -97,9 +108,7 @@ export default class Cli extends EventEmitter {
 			}
 
 			this.rl.prompt();
-		}).on('close', () => {
-			this.emit('end');
-		});
+
 	}
 
 	/**
@@ -115,7 +124,7 @@ export default class Cli extends EventEmitter {
 			throw new CliError('Command not found.');
 		}
 
-		const result = command(...args);
+		const result = command(...args.slice(1));
 
 		return result !== undefined && result !== null ? `${result}\n` : '';
 	}
