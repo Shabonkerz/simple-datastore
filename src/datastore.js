@@ -13,7 +13,7 @@ class Transaction {
  * 	In-memory data store.
  */
 export default class Datastore extends EventEmitter {
-	
+
 	constructor () {
 		super();
 		this.store = {};
@@ -76,6 +76,7 @@ export default class Datastore extends EventEmitter {
 		// Find current value in store.
 		const value = this.store[key];
 
+		// Nothing to unset.
 		if (!value) {
 			return;
 		}

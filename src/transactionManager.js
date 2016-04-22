@@ -16,6 +16,8 @@ export default class TransactionManager {
 		// undoing commands.
 		this.ignoreEvents = false;
 
+		// Hook into datastore events to know when to push the 'undo' version
+		// of the invoked command to undoCommands.
 		this.store
 			.on('set', (key, previous, current) => {
 
@@ -27,7 +29,8 @@ export default class TransactionManager {
 					return;
 				}
 
-
+				// Two scenarios: The key existed with a different value, or
+				// the key did not exist.
 				transaction.undoCommands.push( () => {
 					if (previous) {
 						this.store.set(key, previous);
@@ -36,6 +39,7 @@ export default class TransactionManager {
 						this.store.unset(key);
 					}
 				});
+
 			})
 			.on('unset', (key, value) => {
 
@@ -52,12 +56,17 @@ export default class TransactionManager {
 			});
 	}
 
+	/**
+	 * Begins a new transaction.
+	 */
 	begin () {
 		this.transactions.push(new Transaction());
 	}
 
+	/**
+	 * Undoes any changes made to the store during the current transaction.
+	 */
 	rollback () {
-
 		// Ignore if there are no transactions present.
 		if (!this.transactions.length) {
 			return;
@@ -79,6 +88,9 @@ export default class TransactionManager {
 		this.transactions.pop();
 	}
 
+	/**
+	 * Makes any changes made to the store during the current transaction permanent.
+	 */
 	commit () {
 		// Ignore if no transactions are present.
 		if (!this.transactions.length) {
