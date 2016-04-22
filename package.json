@@ -19,7 +19,10 @@
   },
   "homepage": "https://github.com/Shabonkerz/simple-datastore#readme",
   "devDependencies": {
-    "babel": "latest",
+	"babel-plugin-syntax-async-functions": "^6.5.0",
+	"babel-plugin-transform-regenerator": "^6.6.5",
+	"babel-polyfill": "^6.7.2",
+	"chai": "^3.5.0",
     "babel-core": "latest",
     "babel-eslint": "latest",
     "babel-plugin-syntax-async-generators": "latest",
@@ -27,19 +30,16 @@
     "babel-preset-es2015": "latest",
     "babel-preset-stage-0": "latest",
     "babel-register": "latest",
+    "babel": "latest",
     "eslint": "latest",
-    "gulp": "latest",
     "gulp-babel": "latest",
     "gulp-eslint": "latest",
     "gulp-mocha": "latest",
     "gulp-notify": "latest",
+    "gulp": "latest",
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "babel-plugin-syntax-async-functions": "^6.5.0",
-    "babel-plugin-transform-regenerator": "^6.6.5",
-    "babel-polyfill": "^6.7.2",
-    "chai": "^3.5.0",
     "lodash": "^4.6.1"
   }
 }
