@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import Datastore from '../src/Datastore';
-import TransactionManager, { Transaction } from '../src/transactionManager';
+import TransactionManager, { Transaction, TransactionManagerError } from '../src/transactionManager';
 import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
 
 
 describe('TransactionManager', () => {
@@ -27,22 +27,19 @@ describe('TransactionManager', () => {
 	});
 
 	describe('commit', () => {
-		it('should remove the top transaction', () => {
+		it('should remove all transactions', () => {
 			assert.equal(manager.transactions.length, 0);
 			manager.begin();
 			assert.equal(manager.transactions.length, 1);
-			manager.commit();
-			assert.equal(manager.transactions.length, 0);
-		});
-		it('should remove only the top transaction', () => {
-			assert.equal(manager.transactions.length, 0);
-			manager.begin();
-			datastore.set('x', '10');
 			manager.begin();
 			assert.equal(manager.transactions.length, 2);
 			manager.commit();
-			assert.equal(manager.transactions.length, 1);
-			assert.equal(manager.transactions[0].undoCommands.length, 1);
+			assert.equal(manager.transactions.length, 0);
+		});
+		it('should throw error if no transactions exist', () => {
+            expect(() => {
+				manager.commit();
+            }).to.throw(TransactionManagerError);
 		});
 	});
 
@@ -130,6 +127,11 @@ describe('TransactionManager', () => {
 
 			assert.equal(datastore.get('x'), '10');
 			assert.equal(datastore.get('y'), '30');
+		});
+		it('should throw error if no transactions exist', () => {
+            expect(() => {
+				manager.rollback();
+            }).to.throw(TransactionManagerError);
 		});
 	});
 });
