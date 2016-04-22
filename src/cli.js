@@ -91,25 +91,24 @@ export default class Cli extends EventEmitter {
 	 * @param  {string} line The line to process.
 	 */
 	_onLine (line) {
+		const args = line.split(' ');
 
-			const args = line.split(' ');
-			let result;
+		let result;
 
-			try {
-				result = this._dispatchCommand(...args);
+		try {
+			result = this._dispatchCommand(...args);
 
-				if (result) {
-					this.dest.write(result);
-				}
+			if (result) {
+				this.dest.write(result);
 			}
-			catch (e) {
-				if (e.message === 'Command not found.') {
-					this.dest.write(`Unable to find ${args[0]} command.`);
-				}
+		}
+		catch (e) {
+			if (e.message === 'Command not found.') {
+				this.dest.write(`Unable to find ${args[0]} command.`);
 			}
+		}
 
-			this.rl.prompt();
-
+		this.rl.prompt();
 	}
 
 	/**
