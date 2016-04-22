@@ -1,9 +1,7 @@
 import gulp from 'gulp';
 import babel from 'gulp-babel';
 import eslint from 'gulp-eslint';
-// import sourcemaps from 'gulp-sourcemaps';
 import notify from 'gulp-notify';
-// import plumber from 'gulp-plumber';
 import mocha from 'gulp-mocha';
 
 var filePath = {
