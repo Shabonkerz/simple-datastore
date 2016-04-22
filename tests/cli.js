@@ -72,6 +72,7 @@ describe('Cli', () => {
 			const dest = new PassThrough();
 
 			cli.connect(src, dest);
+
 			assert.isNotNull(cli.src);
 			assert.isNotNull(cli.dest);
 			assert.isNotNull(cli.rl);
@@ -85,9 +86,13 @@ describe('Cli', () => {
 
 			cli.connect(src, dest);
 			cli.init();
+
 			cli._onLine('GET x');
+
 			const result = dest.read() + '';
+
 			assert.equal(result, '> NULL\n> ');
+
 			cli.rl.close();
 		});
 	});
