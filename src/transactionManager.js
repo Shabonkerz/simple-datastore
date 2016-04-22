@@ -6,6 +6,14 @@ export class Transaction {
 	}
 }
 
+export class TransactionManagerError {
+    constructor (message) {
+        this.name = 'TransactionManagerError';
+        this.message = message;
+        this.stack = (new Error()).stack;
+    }
+}
+
 export default class TransactionManager {
 	constructor (store) {
 
@@ -69,7 +77,7 @@ export default class TransactionManager {
 	rollback () {
 		// Ignore if there are no transactions present.
 		if (!this.transactions.length) {
-			return;
+			throw new TransactionManagerError('NO TRANSACTION');
 		}
 
 		// Only rollback the top-level transaction.
@@ -94,11 +102,11 @@ export default class TransactionManager {
 	commit () {
 		// Ignore if no transactions are present.
 		if (!this.transactions.length) {
-			return;
+			throw new TransactionManagerError('NO TRANSACTION');
 		}
 
 		// Changes are already in the store, so essentially we just need to
-		// discard the transaction and its undo commands.
-		this.transactions.pop();
+		// discard the transactions.
+		this.transactions.length = 0;
 	}
 }
