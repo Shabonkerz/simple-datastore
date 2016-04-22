@@ -85,8 +85,7 @@ describe('Cli', () => {
 
 			cli.connect(src, dest);
 			cli.init();
-			src.push('GET x\r\n');
-			src.push(null);
+			cli._onLine('GET x');
 			const result = dest.read() + '';
 			assert.equal(result, '> NULL\n> ');
 			cli.rl.close();
