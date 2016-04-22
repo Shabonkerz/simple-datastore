@@ -4,8 +4,9 @@
   "main": "",
   "description": "Like redis, sans almost all of its features.",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register --require babel-polyfill /tests",
-    "build": "babel source --presets babel-preset-es2015 --out-dir dist"
+    "test": "mocha --compilers js:babel-core/register --require babel-polyfill ./tests",
+    "build": "node ./node_modules/gulp/bin/gulp.js build",
+	"start": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",
