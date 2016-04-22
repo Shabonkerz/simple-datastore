@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Cli, { CliError } from '../src/Cli';
 import { describe, it } from 'mocha';
 import { assert, expect } from 'chai';
-
+import { PassThrough } from 'stream';
 
 describe('Cli', () => {
 	let cli;
@@ -68,10 +68,28 @@ describe('Cli', () => {
             }).to.not.throw(CliError);
 		});
 		it('should set src, dest, and rl properties', () => {
-			cli.connect(process.stdin, process.stdout);
+			const src = new PassThrough();
+			const dest = new PassThrough();
+
+			cli.connect(src, dest);
 			assert.isNotNull(cli.src);
 			assert.isNotNull(cli.dest);
 			assert.isNotNull(cli.rl);
+		});
+	});
+
+	describe('_onLine', () => {
+		it(`should return write 'NULL' to dest stream when reading 'GET x'`, () => {
+			const src = new PassThrough();
+			const dest = new PassThrough();
+
+			cli.connect(src, dest);
+			cli.init();
+			src.push('GET x\r\n');
+			src.push(null);
+			const result = dest.read() + '';
+			assert.equal(result, '> NULL\n> ');
+			cli.rl.close();
 		});
 	});
 });
