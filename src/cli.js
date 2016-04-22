@@ -103,9 +103,7 @@ export default class Cli extends EventEmitter {
 			}
 		}
 		catch (e) {
-			if (e.message === 'Command not found.') {
-				this.dest.write(`Unable to find ${args[0]} command.`);
-			}
+			this.dest.write(e.message + '\n');
 		}
 
 		this.rl.prompt();
