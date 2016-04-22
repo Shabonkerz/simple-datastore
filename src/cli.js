@@ -16,6 +16,7 @@ export class CliError {
 export default class Cli extends EventEmitter {
 	constructor (datastore) {
 		super();
+
 		// By default uses a new data store, unless one is provided.
 		this.datastore = datastore || new Datastore();
 		this.transactionManager = new TransactionManager(this.datastore);
