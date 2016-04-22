@@ -5,7 +5,7 @@ programmatically, or via the provided CLI.
 
 ## CLI Commands
 
-### SET <key> <value>
+### `SET <key> <value>`
 
 Sets a particular key to the specified value in the datastore.
 
@@ -15,7 +15,7 @@ Sets a particular key to the specified value in the datastore.
 10
 ```
 
-### GET <key>
+### `GET <key>`
 
 Retrieves the specified key's value.
 
@@ -25,7 +25,7 @@ Retrieves the specified key's value.
 10
 ```
 
-### UNSET <key>
+### `UNSET <key>`
 
 Deletes the specified key.
 
@@ -38,7 +38,7 @@ Deletes the specified key.
 NULL
 ```
 
-### NUMEQUALTO <value>
+### `NUMEQUALTO <value>`
 
 Retrieves the number of keys with the specified value.
 
@@ -51,7 +51,7 @@ Retrieves the number of keys with the specified value.
 2
 ```
 
-### BEGIN
+### `BEGIN`
 
 Starts a new transaction. Transactions can be nested.
 
@@ -68,7 +68,7 @@ Starts a new transaction. Transactions can be nested.
 10
 ```
 
-### COMMIT
+### `COMMIT`
 
 Commits the changes made to the datastore.
 
@@ -85,7 +85,7 @@ Commits the changes made to the datastore.
 20
 ```
 
-### ROLLBACK
+### `ROLLBACK`
 
 Undoes any changes made to the datastore during the current transaction.
 
@@ -102,7 +102,7 @@ Undoes any changes made to the datastore during the current transaction.
 10
 ```
 
-### END
+### `END`
 
 Terminates the CLI and triggers it's `end` event.
 
@@ -170,22 +170,29 @@ console.log(result);
 // 2
 ```
 
+## Prerequisites
+
+You will need the following things properly installed on your computer.
+
+* [Git](http://git-scm.com/)
+* [Node.js](http://nodejs.org/) (with NPM)
+
 ## Installation
 
-TODO: Describe the installation process
-
-## Usage
-
-TODO: Write usage instructions
+* `git clone <repository-url>` this repository
+* change into the new directory
+* `npm install`
+* `npm run-script build`
+* `npm start`
 
 ## Contributing
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+* Fork it!
+* Create your feature branch: `git checkout -b my-new-feature`
+* Commit your changes: `git commit -am 'Add some feature'`
+* Push to the branch: `git push origin my-new-feature`
+* Submit a pull request :D
 
 ## License
 
-TODO: Write license
+MIT © Asa Rudick
